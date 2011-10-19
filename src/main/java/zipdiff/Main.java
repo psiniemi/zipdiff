@@ -19,6 +19,7 @@ import org.apache.commons.cli.ParseException;
 
 import zipdiff.output.Builder;
 import zipdiff.output.BuilderFactory;
+import zipdiff.output.SplitZipBuilder;
 
 /**
  * Provides a command line interface to zipdiff
@@ -54,7 +55,11 @@ public class Main {
 
 	private static final String OPTION_VERBOSE = "verbose";
 
-	private static final Options options;
+	private static final String OPTION_PROCESS_EMBEDDED = "processembedded";
+
+	private static final String OPTION_SPLIT = "split";
+
+    private static final Options options;
 
 	// static initializer
 	static {
@@ -95,7 +100,14 @@ public class Main {
 
 		Option verboseOption = new Option(OPTION_VERBOSE, OPTION_VERBOSE, false, "verbose mode");
 
-		options.addOption(compareTS);
+	    Option processEmbedded = 
+	            		new Option(OPTION_PROCESS_EMBEDDED, false, "Process embedded zip files");
+	    processEmbedded.setRequired(false);
+
+	    Option split = new Option(OPTION_SPLIT, false, "Split ZIP files into shared, file1 and file2 files");
+	    split.setRequired(false);
+	    
+	    options.addOption(compareTS);
 		options.addOption(compareCRC);
 		options.addOption(file1);
 		options.addOption(file2);
@@ -107,6 +119,8 @@ public class Main {
 		options.addOption(exitWithError);
 		options.addOption(verboseOption);
 		options.addOption(outputFileOption);
+		options.addOption(processEmbedded);
+		options.addOption(split);
 	}
 
 	private static void checkFile(java.io.File f) {
@@ -204,7 +218,7 @@ public class Main {
 
 			if (line.hasOption(OPTION_REGEX)) {
 				regularExpression = line.getOptionValue(OPTION_REGEX);
-				Set regexSet = new HashSet();
+				Set<String> regexSet = new HashSet<String>();
 				regexSet.add(regularExpression);
 
 				calc.setFilenameRegexToIgnore(regexSet);
@@ -215,14 +229,23 @@ public class Main {
 				exitWithErrorOnDiff = true;
 			}
 
+			if (line.hasOption(OPTION_PROCESS_EMBEDDED)) {
+            	calc.setProcessEmbeddedZipFiles(true);
+            } else {
+            	calc.setProcessEmbeddedZipFiles(false);
+            }
+
+			if (line.hasOption(OPTION_SPLIT)) {
+				BuilderFactory.setZipBuilder(new SplitZipBuilder());
+			}
+
 			Differences d = calc.getDifferences();
 
 			if (line.hasOption(OPTION_OUTPUT_FILE)) {
 				String outputFilename = line.getOptionValue(OPTION_OUTPUT_FILE);
 				writeOutputFile(outputFilename, numberOfOutputPrefixesToSkip, d);
 			}
-
-
+			
 			if (d.hasDifferences()) {
 				if (line.hasOption(OPTION_VERBOSE)) {
 					System.out.println(d);

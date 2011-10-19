@@ -12,6 +12,8 @@ package zipdiff.output;
  */
 public class BuilderFactory {
 
+	private static Builder zipBuilder = new ZipBuilder();
+
 	/**
 	 * creates a builder based on the name of the output file
 	 *
@@ -34,12 +36,16 @@ public class BuilderFactory {
 			builder = new XmlBuilder();
 
 		} else if (filename.endsWith(".zip")) {
-			builder = new ZipBuilder();
+			builder = zipBuilder;
 
 		} else {
 			System.err.println("Unknown extension, using text output");
 			builder = new TextBuilder();
 		}
 		return builder;
+	}
+	
+	public static void setZipBuilder(Builder b) {
+		zipBuilder = b;
 	}
 }

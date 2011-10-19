@@ -52,6 +52,9 @@ public class DifferenceCalculator {
 	private Pattern filesToIgnorePattern;
 
 	private boolean bVerbose = false;
+	
+	private boolean processEmbeddedZipFiles = true;
+    
 
 	protected void debug(Object msg) {
 		if (isVerboseEnabled()) {
@@ -101,7 +104,7 @@ public class DifferenceCalculator {
 	 * then that ZipEntry will be ignored from the comparison.
 	 * @see java.util.regex
 	 */
-	public void setFilenameRegexToIgnore(Set patterns) {
+	public void setFilenameRegexToIgnore(Set<String> patterns) {
 		if (patterns == null) {
 			filesToIgnorePattern = null;
 		} else if (patterns.isEmpty()) {
@@ -109,9 +112,7 @@ public class DifferenceCalculator {
 		} else {
 			String regex = "";
 
-			Iterator iter = patterns.iterator();
-			while (iter.hasNext()) {
-				String pattern = (String) iter.next();
+			for (String pattern : patterns) {
 				if (regex.length() > 0) {
 					regex += "|";
 				}
@@ -202,6 +203,19 @@ public class DifferenceCalculator {
 		return numberOfPrefixesToSkip2;
 	}
 
+	/**
+	 * Set whether to process embedded zip files
+	 * 
+	 * @param b
+	 */
+	public void setProcessEmbeddedZipFiles(boolean b) {
+    	processEmbeddedZipFiles = b;
+    }
+    
+    public boolean getProcessEmbeddedZipFiles() {
+    	return processEmbeddedZipFiles;
+    }
+
 
 	/**
 	 * Opens the ZipFile and builds up a map of all the entries. The key is the name of
@@ -211,7 +225,7 @@ public class DifferenceCalculator {
 	 * @throws java.io.IOException
 	 * @Deprecated
 	 */
-	protected Map buildZipEntryMap(ZipFile zf) throws java.io.IOException {
+	protected Map<String, ZipEntry> buildZipEntryMap(ZipFile zf) throws java.io.IOException {
 		return buildZipEntryMap(zf, 0);
 	}
 
@@ -223,10 +237,10 @@ public class DifferenceCalculator {
 	 * @return The map containing all the ZipEntries. The key being the name of the ZipEntry.
 	 * @throws java.io.IOException
 	 */
-	protected Map buildZipEntryMap(ZipFile zf, int p) throws java.io.IOException {
-		Map zipEntryMap = new HashMap();
+	protected Map<String, ZipEntry> buildZipEntryMap(ZipFile zf, int p) throws java.io.IOException {
+		Map<String, ZipEntry> zipEntryMap = new HashMap<String, ZipEntry>();
 		try {
-			Enumeration entries = zf.entries();
+			Enumeration<? extends ZipEntry> entries = zf.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry entry = (ZipEntry) entries.nextElement();
 				InputStream is = null;
@@ -261,7 +275,7 @@ public class DifferenceCalculator {
 	 * @throws IOException
 	 * @Deprecated
 	 */
-	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map zipEntryMap) throws IOException {
+	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String, ZipEntry> zipEntryMap) throws IOException {
 		processZipEntry(prefix, zipEntry, is, zipEntryMap, 0);
 	}
 
@@ -281,7 +295,7 @@ public class DifferenceCalculator {
 	 * @param p number of directory prefixes to skip
 	 * @throws IOException
 	 */
-	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map zipEntryMap, int p) throws IOException {
+	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String, ZipEntry> zipEntryMap, int p) throws IOException {
 		if (ignoreThisFile(prefix, zipEntry.getName())) {
 			logger.log(Level.FINE, "ignoring file: " + zipEntry.getName());
 		} else {
@@ -301,7 +315,7 @@ public class DifferenceCalculator {
 
 
 
-	protected void processEmbeddedZipFile(String prefix, InputStream is, Map m) throws java.io.IOException {
+	protected void processEmbeddedZipFile(String prefix, InputStream is, Map<String, ZipEntry> m) throws java.io.IOException {
 		ZipInputStream zis = new ZipInputStream(is);
 
 		ZipEntry entry = zis.getNextEntry();
@@ -371,8 +385,8 @@ public class DifferenceCalculator {
 	 * @throws java.io.IOException
 	 */
 	protected Differences calculateDifferences(ZipFile zf1, ZipFile zf2, int p1, int p2) throws java.io.IOException {
-		Map map1 = buildZipEntryMap(zf1, p1);
-		Map map2 = buildZipEntryMap(zf2, p2);
+		Map<String, ZipEntry> map1 = buildZipEntryMap(zf1, p1);
+		Map<String, ZipEntry> map2 = buildZipEntryMap(zf2, p2);
 
 		return calculateDifferences(map1, map2);
 	}
@@ -382,28 +396,28 @@ public class DifferenceCalculator {
 	 * differences found between the two maps.
 	 * @return All the differences found between the two maps
 	 */
-	protected Differences calculateDifferences(Map m1, Map m2) {
+	protected Differences calculateDifferences(Map<String, ZipEntry> m1, Map<String, ZipEntry> m2) {
 		Differences d = new Differences();
 
-		Set names1 = m1.keySet();
-		Set names2 = m2.keySet();
+		Set<String> names1 = m1.keySet();
+		Set<String> names2 = m2.keySet();
 
-		Set allNames = new HashSet();
+		Set<String> allNames = new HashSet<String>();
 		allNames.addAll(names1);
 		allNames.addAll(names2);
 
-		Iterator iterAllNames = allNames.iterator();
+		Iterator<String> iterAllNames = allNames.iterator();
 		while (iterAllNames.hasNext()) {
-			String name = (String) iterAllNames.next();
+			String name = iterAllNames.next();
 			if (ignoreThisFile("", name)) {
 				// do nothing
 			} else if (names1.contains(name) && (!names2.contains(name))) {
-				d.fileRemoved(name, (ZipEntry) m1.get(name));
+				d.fileRemoved(name, m1.get(name));
 			} else if (names2.contains(name) && (!names1.contains(name))) {
-				d.fileAdded(name, (ZipEntry) m2.get(name));
+				d.fileAdded(name, m2.get(name));
 			} else if (names1.contains(name) && (names2.contains(name))) {
-				ZipEntry entry1 = (ZipEntry) m1.get(name);
-				ZipEntry entry2 = (ZipEntry) m2.get(name);
+				ZipEntry entry1 = m1.get(name);
+				ZipEntry entry2 = m2.get(name);
 				if (!entriesMatch(entry1, entry2)) {
 					d.fileChanged(name, entry1, entry2);
 				}

@@ -7,7 +7,6 @@ package zipdiff.output;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.Set;
 
 import zipdiff.Differences;
@@ -66,10 +65,8 @@ public class XmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param added set of added files
 	 */
-	protected void writeAdded(PrintWriter pw, Set added) {
-		Iterator iter = added.iterator();
-		while (iter.hasNext()) {
-			String key = (String) iter.next();
+	protected void writeAdded(PrintWriter pw, Set<String> added) {
+		for (String key : added) {
 			pw.print("<added>");
 			pw.print(key);
 			pw.println("</added>");
@@ -83,10 +80,8 @@ public class XmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param removed set of removed files
 	 */
-	protected void writeRemoved(PrintWriter pw, Set removed) {
-		Iterator iter = removed.iterator();
-		while (iter.hasNext()) {
-			String key = (String) iter.next();
+	protected void writeRemoved(PrintWriter pw, Set<String> removed) {
+		for (String key : removed) {
 			pw.print("<removed>");
 			pw.print(key);
 			pw.println("</removed>");
@@ -99,10 +94,8 @@ public class XmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param changed set of modified files
 	 */
-	protected void writeChanged(PrintWriter pw, Set changed) {
-		Iterator iter = changed.iterator();
-		while (iter.hasNext()) {
-			String key = (String) iter.next();
+	protected void writeChanged(PrintWriter pw, Set<String> changed) {
+		for (String key : changed) {
 			pw.print("<changed>");
 			pw.print(key);
 			pw.println("</changed>");
