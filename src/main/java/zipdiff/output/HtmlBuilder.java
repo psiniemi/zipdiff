@@ -7,7 +7,6 @@ package zipdiff.output;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.Set;
 
 import zipdiff.Differences;
@@ -78,7 +77,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param added set of added files
 	 */
-	protected void writeAdded(PrintWriter pw, Set added) {
+	protected void writeAdded(PrintWriter pw, Set<String> added) {
 		writeDiffSet(pw, "Added", added);
 	}
 
@@ -88,7 +87,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param removed set of removed files
 	 */
-	protected void writeRemoved(PrintWriter pw, Set removed) {
+	protected void writeRemoved(PrintWriter pw, Set<String> removed) {
 		writeDiffSet(pw, "Removed", removed);
 	}
 
@@ -98,7 +97,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param changed set of modified files
 	 */
-	protected void writeChanged(PrintWriter pw, Set changed) {
+	protected void writeChanged(PrintWriter pw, Set<String> changed) {
 		writeDiffSet(pw, "Changed", changed);
 	}
 
@@ -109,7 +108,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param name  heading
 	 * @param s     set
 	 */
-	protected void writeDiffSet(PrintWriter pw, String name, Set s) {
+	protected void writeDiffSet(PrintWriter pw, String name, Set<String> s) {
 		pw.println("<TABLE CELLSPACING=\"1\" CELLPADDING=\"3\" WIDTH=\"100%\" BORDER=\"0\">");
 		pw.println("<tr>");
 		pw.println("<td class=\"diffs\" colspan=\"2\">" + name + " (" + s.size() + " entries)</td>");
@@ -120,9 +119,7 @@ public class HtmlBuilder extends AbstractBuilder {
 		pw.println("<td>");
 		if (s.size() > 0) {
 			pw.println("<ul>");
-			Iterator iter = s.iterator();
-			while (iter.hasNext()) {
-				String key = (String) iter.next();
+			for (String key : s) {
 				pw.print("<li>");
 				pw.print(key);
 				pw.println("</li>");

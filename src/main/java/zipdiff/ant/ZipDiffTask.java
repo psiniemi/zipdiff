@@ -40,6 +40,8 @@ public class ZipDiffTask extends Task {
 
 	private boolean compareCRCValues = true;
 
+	private boolean processEmbedded = false;
+	
 	public void setFilename1(String name) {
 		filename1 = name;
 	}
@@ -96,6 +98,14 @@ public class ZipDiffTask extends Task {
 
 	public boolean getCompareCRCValues() {
 		return compareCRCValues;
+	}
+
+	public boolean isProcessEmbedded() {
+		return processEmbedded;
+	}
+
+	public void setProcessEmbedded(boolean processEmbedded) {
+		this.processEmbedded = processEmbedded;
 	}
 
 	@Override
