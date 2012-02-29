@@ -3,13 +3,14 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff.output;
+package net.diibadaaba.zipdiff.output;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import zipdiff.Differences;
+import net.diibadaaba.zipdiff.Differences;
+
 
 /**
  * abstract base class for Builders.

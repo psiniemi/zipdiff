@@ -3,7 +3,7 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff;
+package net.diibadaaba.zipdiff;
 
 import java.util.Iterator;
 import java.util.Map;

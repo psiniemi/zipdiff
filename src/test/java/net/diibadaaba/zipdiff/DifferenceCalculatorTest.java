@@ -3,7 +3,7 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff;
+package net.diibadaaba.zipdiff;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,11 +15,14 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import net.diibadaaba.zipdiff.DifferenceCalculator;
+import net.diibadaaba.zipdiff.Differences;
+import net.diibadaaba.zipdiff.output.AbstractBuilder;
+import net.diibadaaba.zipdiff.output.HtmlBuilder;
+import net.diibadaaba.zipdiff.output.TextBuilder;
+import net.diibadaaba.zipdiff.output.XmlBuilder;
+
 import junit.framework.TestCase;
-import zipdiff.output.AbstractBuilder;
-import zipdiff.output.HtmlBuilder;
-import zipdiff.output.TextBuilder;
-import zipdiff.output.XmlBuilder;
 
 /**
  * tests for DifferenceCalculator
