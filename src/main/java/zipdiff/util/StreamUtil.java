@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Utility to copy streams and make sure all resources get closed
+ * 
+ * @author Pasi Niemi
+ */
 public class StreamUtil {
 	/**
 	 * copies data from an input stream to an output stream

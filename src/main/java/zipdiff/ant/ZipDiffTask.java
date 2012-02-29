@@ -14,6 +14,7 @@ import zipdiff.DifferenceCalculator;
 import zipdiff.Differences;
 import zipdiff.output.Builder;
 import zipdiff.output.BuilderFactory;
+import zipdiff.output.SplitZipBuilder;
 
 /**
  * Ant task for running zipdiff from a build.xml file
@@ -42,6 +43,8 @@ public class ZipDiffTask extends Task {
 
 	private boolean processEmbedded = false;
 	
+	private boolean split = false;
+	
 	public void setFilename1(String name) {
 		filename1 = name;
 	}
@@ -49,8 +52,6 @@ public class ZipDiffTask extends Task {
 	public void setFilename2(String name) {
 		filename2 = name;
 	}
-
-
 
 	public int getNumberOfOutputPrefixesToSkip() {
 		return numberOfOutputPrefixesToSkip;
@@ -108,6 +109,14 @@ public class ZipDiffTask extends Task {
 		this.processEmbedded = processEmbedded;
 	}
 
+	public void setSplit(boolean b) {
+		this.split = b;
+	}
+	
+	public boolean getSplit() {
+		return this.split;
+	}
+	
 	@Override
 	public void execute() throws BuildException {
 		validate();
@@ -115,9 +124,11 @@ public class ZipDiffTask extends Task {
 		// this.log("Filename1=" + filename1, Project.MSG_DEBUG);
 		// this.log("Filename2=" + filename2, Project.MSG_DEBUG);
 		// this.log("destfile=" + getDestFile(), Project.MSG_DEBUG);
-
+		if (getSplit()) {
+			BuilderFactory.setZipBuilder(new SplitZipBuilder());
+		}
 		Differences d = calculateDifferences();
-
+		
 		try {
 			writeDestFile(d);
 		} catch (java.io.IOException ex) {

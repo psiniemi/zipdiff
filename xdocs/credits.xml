@@ -10,6 +10,7 @@
     <ul>
     <li>Sean C. Sullivan - founder of the zipdiff project</li>
     <li>James Stewart - unit tests, improved command line options, documentation</li>
+    <li><a href="mailto:nhnb@users.sf.net">Hendrik Brummermann</a></li>
     <li>Pasi Niemi - added zip splitting functionality and ported to Maven 3</li>
     </ul>
     </p>
