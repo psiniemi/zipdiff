@@ -3,7 +3,7 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff;
+package net.diibadaaba.zipdiff;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import zipdiff.util.StringUtil;
+import net.diibadaaba.zipdiff.util.StringUtil;
+
 
 /**
  * Checks and compiles differences between two zip files.

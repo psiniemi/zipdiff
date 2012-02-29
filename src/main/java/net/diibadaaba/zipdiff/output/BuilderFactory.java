@@ -3,7 +3,7 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff.output;
+package net.diibadaaba.zipdiff.output;
 
 /**
  * creates builders based on the filename extension.

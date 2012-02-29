@@ -3,18 +3,19 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff.ant;
+package net.diibadaaba.zipdiff.ant;
 
 import java.io.IOException;
+
+import net.diibadaaba.zipdiff.DifferenceCalculator;
+import net.diibadaaba.zipdiff.Differences;
+import net.diibadaaba.zipdiff.output.Builder;
+import net.diibadaaba.zipdiff.output.BuilderFactory;
+import net.diibadaaba.zipdiff.output.SplitZipBuilder;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-import zipdiff.DifferenceCalculator;
-import zipdiff.Differences;
-import zipdiff.output.Builder;
-import zipdiff.output.BuilderFactory;
-import zipdiff.output.SplitZipBuilder;
 
 /**
  * Ant task for running zipdiff from a build.xml file

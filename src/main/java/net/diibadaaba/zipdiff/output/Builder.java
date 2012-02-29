@@ -3,11 +3,12 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff.output;
+package net.diibadaaba.zipdiff.output;
 
 import java.io.IOException;
 
-import zipdiff.Differences;
+import net.diibadaaba.zipdiff.Differences;
+
 
 /**
  * Builder pattern: <a href="http://wiki.cs.uiuc.edu/patternStories/BuilderPattern">

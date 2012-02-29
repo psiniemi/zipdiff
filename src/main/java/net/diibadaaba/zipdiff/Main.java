@@ -3,11 +3,15 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff;
+package net.diibadaaba.zipdiff;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
+import net.diibadaaba.zipdiff.output.Builder;
+import net.diibadaaba.zipdiff.output.BuilderFactory;
+import net.diibadaaba.zipdiff.output.SplitZipBuilder;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -17,9 +21,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import zipdiff.output.Builder;
-import zipdiff.output.BuilderFactory;
-import zipdiff.output.SplitZipBuilder;
 
 /**
  * Provides a command line interface to zipdiff

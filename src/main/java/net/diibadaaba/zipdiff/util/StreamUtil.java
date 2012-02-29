@@ -1,4 +1,4 @@
-package zipdiff.util;
+package net.diibadaaba.zipdiff.util;
 
 import java.io.IOException;
 import java.io.InputStream;

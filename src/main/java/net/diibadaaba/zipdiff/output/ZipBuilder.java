@@ -3,9 +3,9 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff.output;
+package net.diibadaaba.zipdiff.output;
 
-import static zipdiff.util.StreamUtil.copyStream;
+import static net.diibadaaba.zipdiff.util.StreamUtil.copyStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +18,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import zipdiff.Differences;
-import zipdiff.util.StringUtil;
+import net.diibadaaba.zipdiff.Differences;
+import net.diibadaaba.zipdiff.util.StringUtil;
+
 
 
 /**

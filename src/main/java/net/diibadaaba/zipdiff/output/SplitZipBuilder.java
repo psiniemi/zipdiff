@@ -1,6 +1,6 @@
-package zipdiff.output;
+package net.diibadaaba.zipdiff.output;
 
-import static zipdiff.util.StreamUtil.copyStream;
+import static net.diibadaaba.zipdiff.util.StreamUtil.copyStream;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,11 +9,12 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.diibadaaba.zipdiff.Differences;
+
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 
-import zipdiff.Differences;
 
 /**
  * Splits two zips into three files: common, files only in first and files only in second to minize the size

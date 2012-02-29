@@ -3,12 +3,13 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff.output;
+package net.diibadaaba.zipdiff.output;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import zipdiff.Differences;
+import net.diibadaaba.zipdiff.Differences;
+
 
 /**
  * creates a list of differences.

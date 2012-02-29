@@ -3,7 +3,7 @@
  *
  * Link: http://www.apache.org/licenses/
  */
-package zipdiff.util;
+package net.diibadaaba.zipdiff.util;
 
 /**
  * String manipulation methods
