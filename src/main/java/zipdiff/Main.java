@@ -24,7 +24,10 @@ import zipdiff.output.SplitZipBuilder;
 /**
  * Provides a command line interface to zipdiff
  *
- * @author Sean C. Sullivan, J.Stewart, Hendrik Brummermann
+ * @author Sean C. Sullivan
+ * @author James Stewart
+ * @author Hendrik Brummermann
+ * @author Pasi Niemi
  */
 public class Main {
 	private static final int EXITCODE_ERROR = 2;

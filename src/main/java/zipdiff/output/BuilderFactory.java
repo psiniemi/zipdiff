@@ -9,6 +9,7 @@ package zipdiff.output;
  * creates builders based on the filename extension.
  *
  * @author Hendrik Brummermann, HIS GmbH
+ * @author Pasi Niemi
  */
 public class BuilderFactory {
 

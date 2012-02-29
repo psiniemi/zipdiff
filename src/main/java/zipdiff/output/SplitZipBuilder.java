@@ -15,10 +15,22 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 
 import zipdiff.Differences;
 
+/**
+ * Splits two zips into three files: common, files only in first and files only in second to minize the size
+ * of almost identical zips
+ * 
+ * @author Pasi Niemi
+ */
 public class SplitZipBuilder implements Builder {
 	private Set<String> added = new HashSet<String>();
 
-	
+	/**
+	 * Drives the generation of the splitted files
+	 * 
+	 * @param filename The output filename
+	 * @param numberOfOutputPrefixesToSkip ignored for this builder
+	 * @param d The calculated differences between files
+	 */
 	public void build(String filename, int numberOfOutputPrefixesToSkip, Differences d) throws IOException {
 		ZipArchiveOutputStream zo = new ZipArchiveOutputStream(new FileOutputStream(filename));
 		ZipArchiveOutputStream z1 = new ZipArchiveOutputStream(new FileOutputStream(filename.substring(0, filename.length() -4) + "-1.zip"));
@@ -59,6 +71,5 @@ public class SplitZipBuilder implements Builder {
 			toWrite.closeArchiveEntry();
 
 		}
-
 	}
 }
