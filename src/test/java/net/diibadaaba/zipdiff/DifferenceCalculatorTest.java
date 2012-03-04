@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+
 import net.diibadaaba.zipdiff.DifferenceCalculator;
 import net.diibadaaba.zipdiff.Differences;
 import net.diibadaaba.zipdiff.output.AbstractBuilder;
@@ -179,11 +181,11 @@ public class DifferenceCalculatorTest extends TestCase {
 		DifferenceCalculator calc = new DifferenceCalculator(testJarOneEntryA1Filename, testJarOneEntryA1Filename);
 		Differences differences = calc.getDifferences();
 		assertFalse(differences.hasDifferences());
-		Map addedEntries = differences.getAdded();
+		Map<String, ZipArchiveEntry> addedEntries = differences.getAdded();
 		assertTrue(addedEntries.size() == 0);
-		Map removedEntries = differences.getRemoved();
+		Map<String, ZipArchiveEntry> removedEntries = differences.getRemoved();
 		assertTrue(removedEntries.size() == 0);
-		Map changedEntries = differences.getChanged();
+		Map<String, ZipArchiveEntry[]> changedEntries = differences.getChanged();
 		assertTrue(changedEntries.size() == 0);
 
 		exerciseOutputBuilders(differences);
@@ -199,11 +201,11 @@ public class DifferenceCalculatorTest extends TestCase {
 		DifferenceCalculator calc = new DifferenceCalculator(testJarOneEntryA1Filename, testJarOneEntryA2Filename);
 		Differences differences = calc.getDifferences();
 		assertFalse(differences.hasDifferences());
-		Map addedEntries = differences.getAdded();
+		Map<String, ZipArchiveEntry> addedEntries = differences.getAdded();
 		assertTrue(addedEntries.size() == 0);
-		Map removedEntries = differences.getRemoved();
+		Map<String, ZipArchiveEntry> removedEntries = differences.getRemoved();
 		assertTrue(removedEntries.size() == 0);
-		Map changedEntries = differences.getChanged();
+		Map<String, ZipArchiveEntry[]> changedEntries = differences.getChanged();
 		assertTrue(changedEntries.size() == 0);
 
 		exerciseOutputBuilders(differences);
@@ -220,11 +222,11 @@ public class DifferenceCalculatorTest extends TestCase {
 		DifferenceCalculator calc = new DifferenceCalculator(testJarOneEntryA1Filename, testJarOneEntryB1Filename);
 		Differences differences = calc.getDifferences();
 		assertTrue(differences.hasDifferences());
-		Map addedEntries = differences.getAdded();
+		Map<String, ZipArchiveEntry> addedEntries = differences.getAdded();
 		assertTrue(addedEntries.containsKey("B"));
-		Map removedEntries = differences.getRemoved();
+		Map<String, ZipArchiveEntry> removedEntries = differences.getRemoved();
 		assertTrue(removedEntries.containsKey("A"));
-		Map changedEntries = differences.getChanged();
+		Map<String, ZipArchiveEntry[]> changedEntries = differences.getChanged();
 		assertTrue(changedEntries.size() == 0);
 
 		exerciseOutputBuilders(differences);
@@ -244,11 +246,11 @@ public class DifferenceCalculatorTest extends TestCase {
 		calc.setIgnoreCVSFiles(true);
 		Differences differences = calc.getDifferences();
 		assertTrue(differences.hasDifferences());
-		Map addedEntries = differences.getAdded();
+		Map<String, ZipArchiveEntry> addedEntries = differences.getAdded();
 		assertTrue(addedEntries.size() == 0);
-		Map removedEntries = differences.getRemoved();
+		Map<String, ZipArchiveEntry> removedEntries = differences.getRemoved();
 		assertTrue(removedEntries.size() == 0);
-		Map changedEntries = differences.getChanged();
+		Map<String, ZipArchiveEntry[]> changedEntries = differences.getChanged();
 		assertTrue(changedEntries.containsKey("A"));
 
 		exerciseOutputBuilders(differences);

@@ -18,9 +18,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 
 import net.diibadaaba.zipdiff.util.StringUtil;
 
@@ -36,6 +37,10 @@ public class DifferenceCalculator {
 
 	private final Logger logger = Logger.getLogger(getClass().getName());
 
+	private final String file1Name;
+	
+	private final String file2Name;
+	
 	private final ZipFile file1;
 
 	private final ZipFile file2;
@@ -88,21 +93,23 @@ public class DifferenceCalculator {
 	 * @throws java.io.IOException
 	 */
 	public DifferenceCalculator(File f1, File f2) throws java.io.IOException {
-		this(new ZipFile(f1), new ZipFile(f2));
+		this(new ZipFile(f1), new ZipFile(f2), f1.getPath(), f2.getPath());
 	}
 
 	/**
 	 * Constructor taking 2 ZipFiles to compare
 	 */
-	public DifferenceCalculator(ZipFile zf1, ZipFile zf2) {
+	public DifferenceCalculator(ZipFile zf1, ZipFile zf2, String zf1Name, String zf2Name) {
+		file1Name = zf1Name;
+		file2Name = zf2Name;
 		file1 = zf1;
 		file2 = zf2;
 	}
 
 	/**
 	 *
-	 * @param Set A set of regular expressions that when matched against a ZipEntry
-	 * then that ZipEntry will be ignored from the comparison.
+	 * @param Set A set of regular expressions that when matched against a ZipArchiveEntry
+	 * then that ZipArchiveEntry will be ignored from the comparison.
 	 * @see java.util.regex
 	 */
 	public void setFilenameRegexToIgnore(Set<String> patterns) {
@@ -166,7 +173,7 @@ public class DifferenceCalculator {
 	}
 
 	/**
-	 * @return true if this instance will check the CRCs of each ZipEntry
+	 * @return true if this instance will check the CRCs of each ZipArchiveEntry
 	 */
 	public boolean getCompareCRCValues() {
 		return compareCRCValues;
@@ -220,34 +227,35 @@ public class DifferenceCalculator {
 
 	/**
 	 * Opens the ZipFile and builds up a map of all the entries. The key is the name of
-	 * the entry and the value is the ZipEntry itself.
+	 * the entry and the value is the ZipArchiveEntry itself.
 	 * @param zf The ZipFile for which to build up the map of ZipEntries
-	 * @return The map containing all the ZipEntries. The key being the name of the ZipEntry.
+	 * @return The map containing all the ZipEntries. The key being the name of the ZipArchiveEntry.
 	 * @throws java.io.IOException
 	 * @Deprecated
 	 */
-	protected Map<String, ZipEntry> buildZipEntryMap(ZipFile zf) throws java.io.IOException {
-		return buildZipEntryMap(zf, 0);
+	protected Map<String, ZipArchiveEntry> buildZipArchiveEntryMap(ZipFile zf) throws java.io.IOException {
+		return buildZipArchiveEntryMap(zf, 0);
 	}
 
 	/**
 	 * Opens the ZipFile and builds up a map of all the entries. The key is the name of
-	 * the entry and the value is the ZipEntry itself.
+	 * the entry and the value is the ZipArchiveEntry itself.
 	 * @param zf The ZipFile for which to build up the map of ZipEntries
 	 * @param number of directory prefixes to skip
-	 * @return The map containing all the ZipEntries. The key being the name of the ZipEntry.
+	 * @return The map containing all the ZipEntries. The key being the name of the ZipArchiveEntry.
 	 * @throws java.io.IOException
 	 */
-	protected Map<String, ZipEntry> buildZipEntryMap(ZipFile zf, int p) throws java.io.IOException {
-		Map<String, ZipEntry> zipEntryMap = new HashMap<String, ZipEntry>();
+	protected Map<String, ZipArchiveEntry> buildZipArchiveEntryMap(ZipFile zf, int p) throws java.io.IOException {
+		Map<String, ZipArchiveEntry> ZipArchiveEntryMap = new HashMap<String, ZipArchiveEntry>();
 		try {
-			Enumeration<? extends ZipEntry> entries = zf.entries();
+			@SuppressWarnings("unchecked")
+			Enumeration<ZipArchiveEntry> entries = zf.getEntries();
 			while (entries.hasMoreElements()) {
-				ZipEntry entry = (ZipEntry) entries.nextElement();
+				ZipArchiveEntry entry = entries.nextElement();
 				InputStream is = null;
 				try {
 					is = zf.getInputStream(entry);
-					processZipEntry("", entry, is, zipEntryMap, p);
+					processZipArchiveEntry("", entry, is, ZipArchiveEntryMap, p);
 				} finally {
 					if (is != null) {
 						is.close();
@@ -258,73 +266,72 @@ public class DifferenceCalculator {
 			zf.close();
 		}
 
-		return zipEntryMap;
+		return ZipArchiveEntryMap;
 	}
 
 	/**
-	 * Will place ZipEntries for a given ZipEntry into the given Map. More ZipEntries will result
-	 * if zipEntry is itself a ZipFile. All embedded ZipFiles will be processed with their names
+	 * Will place ZipEntries for a given ZipArchiveEntry into the given Map. More ZipEntries will result
+	 * if ZipArchiveEntry is itself a ZipFile. All embedded ZipFiles will be processed with their names
 	 * prefixed onto the names of their ZipEntries.
-	 * @param prefix The prefix of the ZipEntry that should be added to the key. Typically used
+	 * @param prefix The prefix of the ZipArchiveEntry that should be added to the key. Typically used
 	 * when processing embedded ZipFiles. The name of the embedded ZipFile would be the prefix of
 	 * all the embedded ZipEntries.
-	 * @param zipEntry The ZipEntry to place into the Map. If it is a ZipFile then all its ZipEntries
+	 * @param ZipArchiveEntry The ZipArchiveEntry to place into the Map. If it is a ZipFile then all its ZipEntries
 	 * will also be placed in the Map.
-	 * @param is The InputStream of the corresponding ZipEntry.
-	 * @param zipEntryMap The Map in which to place all the ZipEntries into. The key will
-	 * be the name of the ZipEntry.
+	 * @param is The InputStream of the corresponding ZipArchiveEntry.
+	 * @param ZipArchiveEntryMap The Map in which to place all the ZipEntries into. The key will
+	 * be the name of the ZipArchiveEntry.
 	 * @throws IOException
 	 * @Deprecated
 	 */
-	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String, ZipEntry> zipEntryMap) throws IOException {
-		processZipEntry(prefix, zipEntry, is, zipEntryMap, 0);
+	protected void processZipArchiveEntry(String prefix, ZipArchiveEntry ZipArchiveEntry, InputStream is, Map<String, ZipArchiveEntry> ZipArchiveEntryMap) throws IOException {
+		processZipArchiveEntry(prefix, ZipArchiveEntry, is, ZipArchiveEntryMap, 0);
 	}
 
 
 	/**
-	 * Will place ZipEntries for a given ZipEntry into the given Map. More ZipEntries will result
-	 * if zipEntry is itself a ZipFile. All embedded ZipFiles will be processed with their names
+	 * Will place ZipEntries for a given ZipArchiveEntry into the given Map. More ZipEntries will result
+	 * if ZipArchiveEntry is itself a ZipFile. All embedded ZipFiles will be processed with their names
 	 * prefixed onto the names of their ZipEntries.
-	 * @param prefix The prefix of the ZipEntry that should be added to the key. Typically used
+	 * @param prefix The prefix of the ZipArchiveEntry that should be added to the key. Typically used
 	 * when processing embedded ZipFiles. The name of the embedded ZipFile would be the prefix of
 	 * all the embedded ZipEntries.
-	 * @param zipEntry The ZipEntry to place into the Map. If it is a ZipFile then all its ZipEntries
+	 * @param zae The ZipArchiveEntry to place into the Map. If it is a ZipFile then all its ZipEntries
 	 * will also be placed in the Map.
-	 * @param is The InputStream of the corresponding ZipEntry.
-	 * @param zipEntryMap The Map in which to place all the ZipEntries into. The key will
-	 * be the name of the ZipEntry.
+	 * @param is The InputStream of the corresponding ZipArchiveEntry.
+	 * @param ZipArchiveEntryMap The Map in which to place all the ZipEntries into. The key will
+	 * be the name of the ZipArchiveEntry.
 	 * @param p number of directory prefixes to skip
 	 * @throws IOException
 	 */
-	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String, ZipEntry> zipEntryMap, int p) throws IOException {
-		if (ignoreThisFile(prefix, zipEntry.getName())) {
-			logger.log(Level.FINE, "ignoring file: " + zipEntry.getName());
+	protected void processZipArchiveEntry(String prefix, ZipArchiveEntry zae, InputStream is, Map<String, ZipArchiveEntry> ZipArchiveEntryMap, int p) throws IOException {
+		if (ignoreThisFile(prefix, zae.getName())) {
+			logger.log(Level.FINE, "ignoring file: " + zae.getName());
 		} else {
-			String name = StringUtil.removeDirectoryPrefix(prefix + zipEntry.getName(), p);
+			String name = StringUtil.removeDirectoryPrefix(prefix + zae.getName(), p);
 			if ((name == null) || name.equals("")) {
 				return;
 			}
 
-			logger.log(Level.FINEST, "processing ZipEntry: " + name);
-			zipEntryMap.put(name, zipEntry);
+			logger.log(Level.FINEST, "processing ZipArchiveEntry: " + name);
+			ZipArchiveEntryMap.put(name, zae);
 
-			if (!zipEntry.isDirectory() && isZipFile(name)) {
-				processEmbeddedZipFile(name + "!", is, zipEntryMap);
+			if (!zae.isDirectory() && isZipFile(name)) {
+				processEmbeddedZipFile(name + "!", is, ZipArchiveEntryMap);
 			}
 		}
 	}
 
 
 
-	protected void processEmbeddedZipFile(String prefix, InputStream is, Map<String, ZipEntry> m) throws java.io.IOException {
-		ZipInputStream zis = new ZipInputStream(is);
+	protected void processEmbeddedZipFile(String prefix, InputStream is, Map<String, ZipArchiveEntry> m) throws java.io.IOException {
+		ZipArchiveInputStream zis = new ZipArchiveInputStream(is);
 
-		ZipEntry entry = zis.getNextEntry();
+		ZipArchiveEntry entry = zis.getNextZipEntry();
 
 		while (entry != null) {
-			processZipEntry(prefix, entry, zis, m);
-			zis.closeEntry();
-			entry = zis.getNextEntry();
+			processZipArchiveEntry(prefix, entry, zis, m);
+			entry = zis.getNextZipEntry();
 		}
 
 	}
@@ -386,8 +393,8 @@ public class DifferenceCalculator {
 	 * @throws java.io.IOException
 	 */
 	protected Differences calculateDifferences(ZipFile zf1, ZipFile zf2, int p1, int p2) throws java.io.IOException {
-		Map<String, ZipEntry> map1 = buildZipEntryMap(zf1, p1);
-		Map<String, ZipEntry> map2 = buildZipEntryMap(zf2, p2);
+		Map<String, ZipArchiveEntry> map1 = buildZipArchiveEntryMap(zf1, p1);
+		Map<String, ZipArchiveEntry> map2 = buildZipArchiveEntryMap(zf2, p2);
 
 		return calculateDifferences(map1, map2);
 	}
@@ -397,7 +404,7 @@ public class DifferenceCalculator {
 	 * differences found between the two maps.
 	 * @return All the differences found between the two maps
 	 */
-	protected Differences calculateDifferences(Map<String, ZipEntry> m1, Map<String, ZipEntry> m2) {
+	protected Differences calculateDifferences(Map<String, ZipArchiveEntry> m1, Map<String, ZipArchiveEntry> m2) {
 		Differences d = new Differences();
 
 		Set<String> names1 = m1.keySet();
@@ -417,10 +424,12 @@ public class DifferenceCalculator {
 			} else if (names2.contains(name) && (!names1.contains(name))) {
 				d.fileAdded(name, m2.get(name));
 			} else if (names1.contains(name) && (names2.contains(name))) {
-				ZipEntry entry1 = m1.get(name);
-				ZipEntry entry2 = m2.get(name);
+				ZipArchiveEntry entry1 = m1.get(name);
+				ZipArchiveEntry entry2 = m2.get(name);
 				if (!entriesMatch(entry1, entry2)) {
 					d.fileChanged(name, entry1, entry2);
+				} else {
+					d.fileUnchanged(name, entry1, entry2);
 				}
 			} else {
 				throw new IllegalStateException("unexpected state");
@@ -433,14 +442,16 @@ public class DifferenceCalculator {
 	/**
 	 * returns true if the two entries are equivalent in type, name, size, compressed size
 	 * and time or CRC.
-	 * @param entry1 The first ZipEntry to compare
-	 * @param entry2 The second ZipEntry to compare
+	 * @param entry1 The first ZipArchiveEntry to compare
+	 * @param entry2 The second ZipArchiveEntry to compare
 	 * @return true if the entries are equivalent.
 	 */
-	protected boolean entriesMatch(ZipEntry entry1, ZipEntry entry2) {
+	protected boolean entriesMatch(ZipArchiveEntry entry1, ZipArchiveEntry entry2) {
 		boolean result;
 
-		result = (entry1.isDirectory() == entry2.isDirectory()) && (entry1.getSize() == entry2.getSize()) && (entry1.getCompressedSize() == entry2.getCompressedSize());
+		result = (entry1.isDirectory() == entry2.isDirectory()) && 
+						(entry1.getSize() == entry2.getSize()) &&
+						(entry1.getCompressedSize() == entry2.getCompressedSize());
 
 		if (!isIgnoringTimestamps()) {
 			result = result && (entry1.getTime() == entry2.getTime());
@@ -475,9 +486,8 @@ public class DifferenceCalculator {
 	 */
 	public Differences getDifferences() throws java.io.IOException {
 		Differences d = calculateDifferences(file1, file2, numberOfPrefixesToSkip1, numberOfPrefixesToSkip2);
-		d.setFilename1(file1.getName());
-		d.setFilename2(file2.getName());
-
+		d.setFilename1(file1Name);
+		d.setFilename2(file2Name);
 		return d;
 	}
 }

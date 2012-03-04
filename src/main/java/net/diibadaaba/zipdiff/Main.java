@@ -35,33 +35,61 @@ public class Main {
 
 	private static final int EXITCODE_DIFF = 1;
 
-	private static final String OPTION_COMPARE_CRC_VALUES = "comparecrcvalues";
+	private static final String OPTION_COMPARE_CRC_VALUES = "c";
 
-	private static final String OPTION_COMPARE_TIMESTAMPS = "comparetimestamps";
+	private static final String OPTION_COMPARE_TIMESTAMPS = "t";
 
-	private static final String OPTION_IGNORE_CVS_FILES = "ignorecvsfiles";
+	private static final String OPTION_IGNORE_CVS_FILES = "i";
 
-	private static final String OPTION_OUTPUT_FILE = "outputfile";
+	private static final String OPTION_OUTPUT_FILE = "o";
 
-	private static final String OPTION_FILE1 = "file1";
+	private static final String OPTION_FILE1 = "1";
 
-	private static final String OPTION_FILE2 = "file2";
+	private static final String OPTION_FILE2 = "2";
 
-	private static final String OPTION_SKIP_OUTPUT_PREFIXES = "skipoutputprefixes";
+	private static final String OPTION_SKIP_OUTPUT_PREFIXES = "so";
 
-	private static final String OPTION_SKIP_PREFIX1 = "skipprefixes1";
+	private static final String OPTION_SKIP_PREFIX1 = "s1";
 
-	private static final String OPTION_SKIP_PREFIX2 = "skipprefixes2";
+	private static final String OPTION_SKIP_PREFIX2 = "s2";
 
-	private static final String OPTION_REGEX = "regex";
+	private static final String OPTION_REGEX = "r";
 
-	private static final String OPTION_EXIT_WITH_ERROR_ON_DIFF = "exitwitherrorondifference";
+	private static final String OPTION_EXIT_WITH_ERROR_ON_DIFF = "e";
 
-	private static final String OPTION_VERBOSE = "verbose";
+	private static final String OPTION_VERBOSE = "v";
 
-	private static final String OPTION_PROCESS_EMBEDDED = "processembedded";
+	private static final String OPTION_PROCESS_EMBEDDED = "p";
 
-	private static final String OPTION_SPLIT = "split";
+	private static final String OPTION_SPLIT = "sp";
+
+	private static final String OPTION_COMPARE_CRC_VALUES_LONG = "comparecrcvalues";
+
+	private static final String OPTION_COMPARE_TIMESTAMPS_LONG = "comparetimestamps";
+
+	private static final String OPTION_IGNORE_CVS_FILES_LONG = "ignorecvsfiles";
+
+	private static final String OPTION_OUTPUT_FILE_LONG = "outputfile";
+
+	private static final String OPTION_FILE1_LONG = "file1";
+
+	private static final String OPTION_FILE2_LONG = "file2";
+
+	private static final String OPTION_SKIP_OUTPUT_PREFIXES_LONG = "skipoutputprefixes";
+
+	private static final String OPTION_SKIP_PREFIX1_LONG = "skipprefixes1";
+
+	private static final String OPTION_SKIP_PREFIX2_LONG = "skipprefixes2";
+
+	private static final String OPTION_REGEX_LONG = "regex";
+
+	private static final String OPTION_EXIT_WITH_ERROR_ON_DIFF_LONG = "exitwitherrorondifference";
+
+	private static final String OPTION_VERBOSE_LONG = "verbose";
+
+	private static final String OPTION_PROCESS_EMBEDDED_LONG = "processembedded";
+
+	private static final String OPTION_SPLIT_LONG = "split";
 
     private static final Options options;
 
@@ -69,46 +97,46 @@ public class Main {
 	static {
 		options = new Options();
 
-		Option compareTS = new Option(OPTION_COMPARE_TIMESTAMPS, OPTION_COMPARE_TIMESTAMPS, false, "Compare timestamps");
+		Option compareTS = new Option(OPTION_COMPARE_TIMESTAMPS, OPTION_COMPARE_TIMESTAMPS_LONG, false, "Compare timestamps");
 		compareTS.setRequired(false);
 
-		Option compareCRC = new Option(OPTION_COMPARE_CRC_VALUES, OPTION_COMPARE_CRC_VALUES, false, "Compare CRC values");
+		Option compareCRC = new Option(OPTION_COMPARE_CRC_VALUES, OPTION_COMPARE_CRC_VALUES_LONG, false, "Compare CRC values");
 		compareCRC.setRequired(false);
 
-		Option file1 = new Option(OPTION_FILE1, OPTION_FILE1, true, "<filename> first file to compare");
+		Option file1 = new Option(OPTION_FILE1, OPTION_FILE1_LONG, true, "<filename> first file to compare");
 		file1.setRequired(true);
 
-		Option file2 = new Option(OPTION_FILE2, OPTION_FILE2, true, "<filename> second file to compare");
+		Option file2 = new Option(OPTION_FILE2, OPTION_FILE2_LONG, true, "<filename> second file to compare");
 		file2.setRequired(true);
 
-		Option numberOfOutputPrefixesToSkip = new Option(OPTION_SKIP_OUTPUT_PREFIXES, OPTION_SKIP_OUTPUT_PREFIXES, true, "<n> number of directory prefix to skip in the output file (if supported by outputter");
+		Option numberOfOutputPrefixesToSkip = new Option(OPTION_SKIP_OUTPUT_PREFIXES, OPTION_SKIP_OUTPUT_PREFIXES_LONG, true, "<n> number of directory prefix to skip in the output file (if supported by outputter");
 		numberOfOutputPrefixesToSkip.setRequired(false);
 
 
-		Option numberOfPrefixesToSkip1 = new Option(OPTION_SKIP_PREFIX1, OPTION_SKIP_PREFIX1, true, "<n> number of directory prefix to skip for the first file");
+		Option numberOfPrefixesToSkip1 = new Option(OPTION_SKIP_PREFIX1, OPTION_SKIP_PREFIX1_LONG, true, "<n> number of directory prefix to skip for the first file");
 		numberOfPrefixesToSkip1.setRequired(false);
 
-		Option numberOfPrefixesToSkip2 = new Option(OPTION_SKIP_PREFIX2, OPTION_SKIP_PREFIX2, true, "<n> number of directory prefix to skip for the second file");
+		Option numberOfPrefixesToSkip2 = new Option(OPTION_SKIP_PREFIX2, OPTION_SKIP_PREFIX2_LONG, true, "<n> number of directory prefix to skip for the second file");
 		numberOfPrefixesToSkip2.setRequired(false);
 
-		Option outputFileOption = new Option(OPTION_OUTPUT_FILE, OPTION_OUTPUT_FILE, true, "output filename");
+		Option outputFileOption = new Option(OPTION_OUTPUT_FILE, OPTION_OUTPUT_FILE_LONG, true, "output filename");
 		outputFileOption.setRequired(false);
 
-		Option regex = new Option(OPTION_REGEX, OPTION_REGEX, true, "regular expression to match files to exclude e.g. (?i)meta-inf.*");
+		Option regex = new Option(OPTION_REGEX, OPTION_REGEX_LONG, true, "regular expression to match files to exclude e.g. (?i)meta-inf.*");
 		regex.setRequired(false);
 
-		Option ignoreCVSFilesOption = new Option(OPTION_IGNORE_CVS_FILES, OPTION_IGNORE_CVS_FILES, false, "ignore CVS files");
+		Option ignoreCVSFilesOption = new Option(OPTION_IGNORE_CVS_FILES, OPTION_IGNORE_CVS_FILES_LONG, false, "ignore CVS files");
 		ignoreCVSFilesOption.setRequired(false);
 
-		Option exitWithError = new Option(OPTION_EXIT_WITH_ERROR_ON_DIFF, OPTION_EXIT_WITH_ERROR_ON_DIFF, false, "if a difference is found then exit with error " + EXITCODE_DIFF);
+		Option exitWithError = new Option(OPTION_EXIT_WITH_ERROR_ON_DIFF, OPTION_EXIT_WITH_ERROR_ON_DIFF_LONG, false, "if a difference is found then exit with error " + EXITCODE_DIFF);
 
-		Option verboseOption = new Option(OPTION_VERBOSE, OPTION_VERBOSE, false, "verbose mode");
+		Option verboseOption = new Option(OPTION_VERBOSE, OPTION_VERBOSE_LONG, false, "verbose mode");
 
 	    Option processEmbedded = 
-	            		new Option(OPTION_PROCESS_EMBEDDED, false, "Process embedded zip files");
+	            		new Option(OPTION_PROCESS_EMBEDDED, OPTION_PROCESS_EMBEDDED_LONG, false, "Process embedded zip files");
 	    processEmbedded.setRequired(false);
 
-	    Option split = new Option(OPTION_SPLIT, false, "Split ZIP files into shared, file1 and file2 files");
+	    Option split = new Option(OPTION_SPLIT, OPTION_SPLIT_LONG, false, "Split ZIP files into shared, file1 and file2 files");
 	    split.setRequired(false);
 	    
 	    options.addOption(compareTS);
