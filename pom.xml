@@ -4,13 +4,18 @@
 
 	<groupId>net.diibadaaba.zipdiff</groupId>
 	<artifactId>zipdiff</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
 	<name>zipdiff</name>
 	<description>Library and utility for finding differences between zip files</description>
 	<url>https://github.com/psiniemi/zipdiff/</url>
-
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	
 	<scm>
 		<developerConnection>scm:git:ssh://git@github.com:psiniemi/zipdiff.git</developerConnection>
 		<connection>scm:git:git://github.com/psiniemi/zipdiff.git</connection>
@@ -126,7 +131,7 @@
 					</descriptors>
 					<archive>
 						<manifest>
-							<mainClass>zipdiff.Main</mainClass>
+							<mainClass>net.diibadaaba.zipdiff.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -170,4 +175,4 @@
 			</build>
 		</profile>
 	</profiles>
-</project>
+</project>	

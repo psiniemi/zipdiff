@@ -9,19 +9,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.zip.ZipEntry;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 /**
  * Used to keep track of difference between 2 zip files.
  *
  * @author Sean C. Sullivan
  */
 public class Differences {
-    private final Map<String, ZipEntry> added = new TreeMap<String, ZipEntry>();
-    private final Map<String, ZipEntry> removed = new TreeMap<String, ZipEntry>();
-    private final Map<String, ZipEntry[]> changed = new TreeMap<String, ZipEntry[]>();
-    private final Map<String, ZipEntry> ignored = new TreeMap<String, ZipEntry>();
-	private final Map<String, ZipEntry[]> unchanged = new TreeMap<String, ZipEntry[]>();
+    private final Map<String, ZipArchiveEntry> added = new TreeMap<String, ZipArchiveEntry>();
+    private final Map<String, ZipArchiveEntry> removed = new TreeMap<String, ZipArchiveEntry>();
+    private final Map<String, ZipArchiveEntry[]> changed = new TreeMap<String, ZipArchiveEntry[]>();
+    private final Map<String, ZipArchiveEntry> ignored = new TreeMap<String, ZipArchiveEntry>();
+	private final Map<String, ZipArchiveEntry[]> unchanged = new TreeMap<String, ZipArchiveEntry[]>();
     private String filename1;
     private String filename2;
 
@@ -45,42 +45,42 @@ public class Differences {
         return filename2;
     }
 
-    public void fileAdded(String fqn, ZipEntry ze) {
+    public void fileAdded(String fqn, ZipArchiveEntry ze) {
         added.put(fqn, ze);
     }
 
-    public void fileRemoved(String fqn, ZipEntry ze) {
+    public void fileRemoved(String fqn, ZipArchiveEntry ze) {
         removed.put(fqn, ze);
     }
 
-    public void fileIgnored(String fqn, ZipEntry ze) {
+    public void fileIgnored(String fqn, ZipArchiveEntry ze) {
         ignored.put(fqn, ze);
     }
 
-    public void fileChanged(String fqn, ZipEntry z1, ZipEntry z2) {
-        ZipEntry[] entries = new ZipEntry[2];
+    public void fileChanged(String fqn, ZipArchiveEntry z1, ZipArchiveEntry z2) {
+        ZipArchiveEntry[] entries = new ZipArchiveEntry[2];
         entries[0] = z1;
         entries[1] = z2;
         changed.put(fqn, entries);
     }
 
-    public Map<String, ZipEntry> getAdded() {
+    public Map<String, ZipArchiveEntry> getAdded() {
         return added;
     }
 
-    public Map<String, ZipEntry> getRemoved() {
+    public Map<String, ZipArchiveEntry> getRemoved() {
         return removed;
     }
 
-    public Map<String, ZipEntry[]> getChanged() {
+    public Map<String, ZipArchiveEntry[]> getChanged() {
         return changed;
     }
 
-    public Map<String, ZipEntry[]> getUnchanged() {
+    public Map<String, ZipArchiveEntry[]> getUnchanged() {
         return unchanged;
     }
 
-    public Map<String, ZipEntry> getIgnored() {
+    public Map<String, ZipArchiveEntry> getIgnored() {
         return ignored;
     }
 
@@ -127,7 +127,7 @@ public class Differences {
         iter = keys.iterator();
         while (iter.hasNext()) {
             String name = iter.next();
-            ZipEntry[] entries = getChanged().get(name);
+            ZipArchiveEntry[] entries = getChanged().get(name);
             sb.append("\t[changed] " + name + " ");
             sb.append(" ( size " + entries[0].getSize());
             sb.append(" : " + entries[1].getSize());
@@ -139,9 +139,8 @@ public class Differences {
         return sb.toString();
     }
 
-	public void fileUnchanged(String fqn, ZipEntry z1, ZipEntry z2) {
-		// TODO Auto-generated method stub
-        ZipEntry[] entries = new ZipEntry[2];
+	public void fileUnchanged(String fqn, ZipArchiveEntry z1, ZipArchiveEntry z2) {
+        ZipArchiveEntry[] entries = new ZipArchiveEntry[2];
         entries[0] = z1;
         entries[1] = z2;
         unchanged.put(fqn, entries);

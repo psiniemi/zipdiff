@@ -37,7 +37,6 @@ public class SplitZipBuilder implements Builder {
 		ZipArchiveOutputStream z1 = new ZipArchiveOutputStream(new FileOutputStream(filename.substring(0, filename.length() -4) + "-1.zip"));
 		ZipArchiveOutputStream z2 = new ZipArchiveOutputStream(new FileOutputStream(filename.substring(0, filename.length() -4) + "-2.zip"));
 		ZipFile zin1 = new ZipFile(d.getFilename1());
-
 		ZipFile zin2 = new ZipFile(d.getFilename2());
 		handleFile(zin1, zo, z1, d);
 		handleFile(zin2, zo, z2, d);
