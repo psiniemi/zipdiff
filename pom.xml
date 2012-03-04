@@ -15,11 +15,11 @@
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
-	
+
 	<scm>
-		<developerConnection>scm:git:ssh://git@github.com:psiniemi/zipdiff.git</developerConnection>
-		<connection>scm:git:git://github.com/psiniemi/zipdiff.git</connection>
-		<url>https://github.com/psiniemi/zipdiff/</url>
+		<developerConnection>scm:git:git@github.com:psiniemi/zipdiff.git</developerConnection>
+		<connection>scm:git:git@github.com:psiniemi/zipdiff.git</connection>
+		<url>git:git@github.com:psiniemi/zipdiff.git/</url>
 	</scm>
 
 	<licenses>
