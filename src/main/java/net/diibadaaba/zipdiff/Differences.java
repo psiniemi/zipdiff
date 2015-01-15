@@ -25,38 +25,69 @@ public class Differences {
     private String filename1;
     private String filename2;
 
+    /**
+     * 
+     */
     public Differences() {
-        // todo 
     }
 
+    /**
+     * @param filename
+     */
     public void setFilename1(String filename) {
         filename1 = filename;
     }
 
+    /**
+     * @param filename
+     */
     public void setFilename2(String filename) {
         filename2 = filename;
     }
 
+    /**
+     * @return first file name
+     */
     public String getFilename1() {
         return filename1;
     }
 
+    /**
+     * @return second file name
+     */
     public String getFilename2() {
         return filename2;
     }
 
+    /**
+     * @param fqn
+     * @param ze
+     */
     public void fileAdded(String fqn, ZipArchiveEntry ze) {
         added.put(fqn, ze);
     }
 
+    /**
+     * @param fqn
+     * @param ze
+     */
     public void fileRemoved(String fqn, ZipArchiveEntry ze) {
         removed.put(fqn, ze);
     }
 
+    /**
+     * @param fqn
+     * @param ze
+     */
     public void fileIgnored(String fqn, ZipArchiveEntry ze) {
         ignored.put(fqn, ze);
     }
 
+    /**
+     * @param fqn
+     * @param z1
+     * @param z2
+     */
     public void fileChanged(String fqn, ZipArchiveEntry z1, ZipArchiveEntry z2) {
         ZipArchiveEntry[] entries = new ZipArchiveEntry[2];
         entries[0] = z1;
@@ -64,26 +95,44 @@ public class Differences {
         changed.put(fqn, entries);
     }
 
+    /**
+     * @return added entries
+     */
     public Map<String, ZipArchiveEntry> getAdded() {
         return added;
     }
 
+    /**
+     * @return removed entries
+     */
     public Map<String, ZipArchiveEntry> getRemoved() {
         return removed;
     }
 
+    /**
+     * @return changed entries
+     */
     public Map<String, ZipArchiveEntry[]> getChanged() {
         return changed;
     }
 
+    /**
+     * @return unchanged entries
+     */
     public Map<String, ZipArchiveEntry[]> getUnchanged() {
         return unchanged;
     }
 
+    /**
+     * @return ignored files
+     */
     public Map<String, ZipArchiveEntry> getIgnored() {
         return ignored;
     }
 
+    /**
+     * @return whether files have any differences
+     */
     public boolean hasDifferences() {
         return ((getChanged().size() > 0) || (getAdded().size() > 0) || (getRemoved().size() > 0));
     }
@@ -139,6 +188,11 @@ public class Differences {
         return sb.toString();
     }
 
+	/**
+	 * @param fqn
+	 * @param z1
+	 * @param z2
+	 */
 	public void fileUnchanged(String fqn, ZipArchiveEntry z1, ZipArchiveEntry z2) {
         ZipArchiveEntry[] entries = new ZipArchiveEntry[2];
         entries[0] = z1;

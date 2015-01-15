@@ -46,74 +46,128 @@ public class ZipDiffTask extends Task {
 	
 	private boolean split = false;
 	
+	/**
+	 * @param name
+	 */
 	public void setFilename1(String name) {
 		filename1 = name;
 	}
 
+	/**
+	 * @param name
+	 */
 	public void setFilename2(String name) {
 		filename2 = name;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getNumberOfOutputPrefixesToSkip() {
 		return numberOfOutputPrefixesToSkip;
 	}
 
+	/**
+	 * @param numberOfOutputPrefixesToSkip
+	 */
 	public void setNumberOfOutputPrefixesToSkip(int numberOfOutputPrefixesToSkip) {
 		this.numberOfOutputPrefixesToSkip = numberOfOutputPrefixesToSkip;
 	}
 
+	/**
+	 * @return how many directories to skip for file 1
+	 */
 	public int getSkipPrefixes1() {
 		return skipPrefixes1;
 	}
 
+	/**
+	 * @param numberOfPrefixesToSkip1
+	 */
 	public void setSkipPrefixes1(int numberOfPrefixesToSkip1) {
 		this.skipPrefixes1 = numberOfPrefixesToSkip1;
 	}
 
+	/**
+	 * @return how many directories to skip for file 2
+	 */
 	public int getSkipPrefixes2() {
 		return SkipPrefixes2;
 	}
 
+	/**
+	 * @param numberOfPrefixesToSkip2
+	 */
 	public void setSkipPrefixes2(int numberOfPrefixesToSkip2) {
 		this.SkipPrefixes2 = numberOfPrefixesToSkip2;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setIgnoreTimestamps(boolean b) {
 		ignoreTimestamps = b;
 	}
 
+	/**
+	 * @return whether to skip timestamps
+	 */
 	public boolean getIgnoreTimestamps() {
 		return ignoreTimestamps;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setIgnoreCVSFiles(boolean b) {
 		ignoreCVSFiles = b;
 	}
 
+	/**
+	 * @return whether to skip CVS entries
+	 */
 	public boolean getIgnoreCVSFiles() {
 		return ignoreCVSFiles;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setCompareCRCValues(boolean b) {
 		compareCRCValues = b;
 	}
 
+	/**
+	 * @return whether to compare CRC values
+	 */
 	public boolean getCompareCRCValues() {
 		return compareCRCValues;
 	}
 
+	/**
+	 * @return whether to process embedded zip files recursively
+	 */
 	public boolean isProcessEmbedded() {
 		return processEmbedded;
 	}
 
+	/**
+	 * @param processEmbedded
+	 */
 	public void setProcessEmbedded(boolean processEmbedded) {
 		this.processEmbedded = processEmbedded;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setSplit(boolean b) {
 		this.split = b;
 	}
 	
+	/**
+	 * @return whether to split files
+	 */
 	public boolean getSplit() {
 		return this.split;
 	}

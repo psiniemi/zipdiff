@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.diibadaaba.zipdiff.Differences;
+import net.diibadaaba.zipdiff.util.StringUtil;
+import net.diibadaaba.zipdiff.util.ZipUtil;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -38,8 +40,8 @@ public class SplitZipBuilder implements Builder {
 		ZipArchiveOutputStream z2 = new ZipArchiveOutputStream(new FileOutputStream(filename.substring(0, filename.length() -4) + "-2.zip"));
 		ZipFile zin1 = new ZipFile(d.getFilename1());
 		ZipFile zin2 = new ZipFile(d.getFilename2());
-		handleFile(zin1, zo, z1, d);
-		handleFile(zin2, zo, z2, d);
+		handleFile(zin1, zo, z1, d, numberOfOutputPrefixesToSkip);
+		handleFile(zin2, zo, z2, d, numberOfOutputPrefixesToSkip);
 		zo.close();
 		z1.close();
 		z2.close();
@@ -48,7 +50,7 @@ public class SplitZipBuilder implements Builder {
 	}
 
 	private void handleFile(ZipFile original, ZipArchiveOutputStream unchanged,
-			ZipArchiveOutputStream changed, Differences d) throws IOException {
+			ZipArchiveOutputStream changed, Differences d, int numberOfOutputPrefixesToSkip) throws IOException {
 		@SuppressWarnings("unchecked")
 		Enumeration<? extends ZipArchiveEntry> entries = original.getEntries();
 		while (entries.hasMoreElements()) {
@@ -62,7 +64,8 @@ public class SplitZipBuilder implements Builder {
 			} else {
 				toWrite = changed;
 			}
-			ZipArchiveEntry newEntry = (ZipArchiveEntry) entry.clone();
+			ZipArchiveEntry newEntry = ZipUtil.copyToNewName(entry, 
+							StringUtil.removeDirectoryPrefix(entry.getName(), numberOfOutputPrefixesToSkip));
 			toWrite.putArchiveEntry(newEntry);
 			if (!entry.isDirectory()) {
 				is = original.getInputStream(entry);

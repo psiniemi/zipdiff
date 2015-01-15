@@ -175,6 +175,8 @@ public class DifferenceCalculatorTest extends TestCase {
 	/**
 	 * Test for Differences calculateDifferences(ZipFile, ZipFile)
 	 * with the same file - no differences should be found
+	 * @throws FileNotFoundException 
+	 * @throws IOException 
 	 */
 	public void testCalculateDifferencesSameZip() throws FileNotFoundException, IOException {
 		createJarOneEntryA1();
@@ -194,6 +196,8 @@ public class DifferenceCalculatorTest extends TestCase {
 
 	/**
 	 * Test for Differences calculateDifferences(ZipFile, ZipFile)
+	 * @throws FileNotFoundException 
+	 * @throws IOException 
 	 */
 	public void testCalculateDifferencesZipsSameEntries() throws FileNotFoundException, IOException {
 		createJarOneEntryA1();
@@ -215,6 +219,8 @@ public class DifferenceCalculatorTest extends TestCase {
 	 * Test for Differences calculateDifferences(ZipFile, ZipFile)
 	 * Test that the differences between two zips with A in one and B in the second.
 	 * A will have been removed and B will have been added.
+	 * @throws FileNotFoundException 
+	 * @throws IOException 
 	 */
 	public void testCalculateDifferencesZipsDifferentEntries() throws FileNotFoundException, IOException {
 		createJarOneEntryA1();
@@ -238,6 +244,8 @@ public class DifferenceCalculatorTest extends TestCase {
 	 * Test for Differences calculateDifferences(ZipFile, ZipFile)
 	 * Test that the differences between two zips with A in one and A in the second with different content.
 	 * A will have been removed and B will have been added.
+	 * @throws FileNotFoundException 
+	 * @throws IOException 
 	 */
 	public void testCalculateDifferencesZipsSameEntriesDifferentContent() throws FileNotFoundException, IOException {
 		createJarOneEntryA1();

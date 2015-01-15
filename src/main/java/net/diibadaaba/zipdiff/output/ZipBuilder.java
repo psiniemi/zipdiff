@@ -22,6 +22,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 
 import net.diibadaaba.zipdiff.Differences;
 import net.diibadaaba.zipdiff.util.StringUtil;
+import net.diibadaaba.zipdiff.util.ZipUtil;
 
 
 
@@ -91,11 +92,7 @@ public class ZipBuilder extends AbstractBuilder {
 			String filename = itr.next();
 			ZipArchiveEntry zae = zipFile.getEntry(filename);
 			
-			ZipArchiveEntry z = new ZipArchiveEntry(StringUtil.removeDirectoryPrefix(filename, numberOfOutputPrefixesToSkip));
-	        z.setInternalAttributes(zae.getInternalAttributes());
-	        z.setExternalAttributes(zae.getExternalAttributes());
-	        z.setExtraFields(zae.getExtraFields(true));
-
+			ZipArchiveEntry z = ZipUtil.copyToNewName(zae, StringUtil.removeDirectoryPrefix(filename, numberOfOutputPrefixesToSkip));
 			
 			os.putArchiveEntry(z);
 			if (!z.isDirectory()) {
@@ -108,4 +105,6 @@ public class ZipBuilder extends AbstractBuilder {
 		zipFile.close();
 		os.close();
 	}
+	
+
 }

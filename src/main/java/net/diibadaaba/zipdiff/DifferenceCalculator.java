@@ -49,7 +49,7 @@ public class DifferenceCalculator {
 
 	private int numberOfPrefixesToSkip2 = 0;
 
-	private boolean ignoreTimestamps = false;
+	private boolean ignoreTimestamps = true;
 
 	private boolean ignoreCVSFiles = false;
 
@@ -61,7 +61,7 @@ public class DifferenceCalculator {
 	
 	private boolean processEmbeddedZipFiles = true;
     
-
+	private static final Pattern zipFilesPattern = Pattern.compile(".*?\\.zip$|.*?\\.jar$|.*?\\.war$|.*?\\.ear$", Pattern.CASE_INSENSITIVE);
 	protected void debug(Object msg) {
 		if (isVerboseEnabled()) {
 			System.out.println("[" + DifferenceCalculator.class.getName() + "] " + String.valueOf(msg));
@@ -82,6 +82,8 @@ public class DifferenceCalculator {
 
 	/**
 	 * Constructor taking 2 filenames to compare
+	 * @param filename1 
+	 * @param filename2 
 	 * @throws java.io.IOException
 	 */
 	public DifferenceCalculator(String filename1, String filename2) throws java.io.IOException {
@@ -90,6 +92,8 @@ public class DifferenceCalculator {
 
 	/**
 	 * Constructor taking 2 Files to compare
+	 * @param f1 
+	 * @param f2 
 	 * @throws java.io.IOException
 	 */
 	public DifferenceCalculator(File f1, File f2) throws java.io.IOException {
@@ -98,6 +102,10 @@ public class DifferenceCalculator {
 
 	/**
 	 * Constructor taking 2 ZipFiles to compare
+	 * @param zf1 
+	 * @param zf2 
+	 * @param zf1Name 
+	 * @param zf2Name 
 	 */
 	public DifferenceCalculator(ZipFile zf1, ZipFile zf2, String zf1Name, String zf2Name) {
 		file1Name = zf1Name;
@@ -108,6 +116,7 @@ public class DifferenceCalculator {
 
 	/**
 	 *
+	 * @param patterns 
 	 * @param Set A set of regular expressions that when matched against a ZipArchiveEntry
 	 * then that ZipArchiveEntry will be ignored from the comparison.
 	 * @see java.util.regex
@@ -220,6 +229,9 @@ public class DifferenceCalculator {
     	processEmbeddedZipFiles = b;
     }
     
+    /**
+     * @return get whether to process embedded zip files
+     */
     public boolean getProcessEmbeddedZipFiles() {
     	return processEmbeddedZipFiles;
     }
@@ -316,13 +328,11 @@ public class DifferenceCalculator {
 			logger.log(Level.FINEST, "processing ZipArchiveEntry: " + name);
 			ZipArchiveEntryMap.put(name, zae);
 
-			if (!zae.isDirectory() && isZipFile(name)) {
-				processEmbeddedZipFile(name + "!", is, ZipArchiveEntryMap);
+			if (!zae.isDirectory() && isZipFile(name) && getProcessEmbeddedZipFiles()) {
+				processEmbeddedZipFile(prefix + name + "!", is, ZipArchiveEntryMap);
 			}
 		}
 	}
-
-
 
 	protected void processEmbeddedZipFile(String prefix, InputStream is, Map<String, ZipArchiveEntry> m) throws java.io.IOException {
 		ZipArchiveInputStream zis = new ZipArchiveInputStream(is);
@@ -343,28 +353,7 @@ public class DifferenceCalculator {
 	 * @return true if it has a valid extension.
 	 */
 	public static boolean isZipFile(String filename) {
-		boolean result;
-
-		if (filename == null) {
-			result = false;
-		} else {
-			String lowercaseName = filename.toLowerCase();
-			if (lowercaseName.endsWith(".zip")) {
-				result = true;
-			} else if (lowercaseName.endsWith(".ear")) {
-				result = true;
-			} else if (lowercaseName.endsWith(".war")) {
-				result = true;
-			} else if (lowercaseName.endsWith(".rar")) {
-				result = true;
-			} else if (lowercaseName.endsWith(".jar")) {
-				result = true;
-			} else {
-				result = false;
-			}
-		}
-
-		return result;
+		return zipFilesPattern.matcher("" + filename).matches();
 	}
 
 	/**
@@ -463,18 +452,30 @@ public class DifferenceCalculator {
 		return result;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setIgnoreTimestamps(boolean b) {
 		ignoreTimestamps = b;
 	}
 
+	/**
+	 * @return get whether to ignore timestamps
+	 */
 	public boolean isIgnoringTimestamps() {
 		return ignoreTimestamps;
 	}
 
+	/**
+	 * @return get whether to ignore CVS entries
+	 */
 	public boolean ignoreCVSFiles() {
 		return ignoreCVSFiles;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setIgnoreCVSFiles(boolean b) {
 		ignoreCVSFiles = b;
 	}
