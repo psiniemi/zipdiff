@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.util.Set;
 
 import net.diibadaaba.zipdiff.Differences;
+import net.diibadaaba.zipdiff.util.StringUtil;
 
 
 /**
@@ -44,7 +45,7 @@ public class HtmlBuilder extends AbstractBuilder {
 		if (filename1 == null) {
 			filename1 = "filename1.zip";
 		}
-		pw.print(filename1);
+		pw.print(StringUtil.escapeHtml(filename1));
 		pw.println("<br>");
 
 		pw.print("Second file: ");
@@ -54,7 +55,7 @@ public class HtmlBuilder extends AbstractBuilder {
 		if (filename2 == null) {
 			filename2 = "filename2.zip";
 		}
-		pw.print(filename2);
+		pw.print(StringUtil.escapeHtml(filename2));
 		pw.println("</p>");
 
 		writeAdded(pw, d.getAdded().keySet());
@@ -122,7 +123,7 @@ public class HtmlBuilder extends AbstractBuilder {
 			pw.println("<ul>");
 			for (String key : s) {
 				pw.print("<li>");
-				pw.print(key);
+				pw.print(StringUtil.escapeHtml(key));
 				pw.println("</li>");
 			}
 			pw.println("</ul>");
